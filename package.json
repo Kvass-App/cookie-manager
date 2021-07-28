@@ -1,0 +1,31 @@
+{
+  "name": "@kvass/cookie-manager",
+  "version": "0.0.0-development",
+  "description": "Cookie management tool",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"No tests yet\"",
+    "semantic-release": "dotenv semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kvass-App/cookie-manager.git"
+  },
+  "author": "carsten@kvass.no",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kvass-App/cookie-manager/issues"
+  },
+  "homepage": "https://github.com/Kvass-App/cookie-manager#readme",
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
+    "dotenv-cli": "^4.0.0",
+    "semantic-release-cli": "^5.4.3",
+    "semantic-release": "^17.4.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
