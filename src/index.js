@@ -2,41 +2,50 @@ function CookieManager(options = {}) {
   let { onChange = () => {}, container = document.body } = options
 
   let value
+  let view = 'Default'
   let el = document.createElement('form')
   el.classList.add('cookie-manager')
 
-  const getMarkup = options => `
-  <form class="cookie-manager">
+  const Renderer = {
+    getConfigView: options => `
+  <div class="cookie-manager__modal">
+    ${options.consents
+      .map(
+        c => `
+      <label class="cookie-manager__consent">
+        <span class="cookie-manager__consent-content">
+          <span class="cookie-manager__consent-title">${c.title}</span>
+          <span class="cookie-manager__consent-description">${c.description}</span>
+        </span>
+        
+        <input type="checkbox" name="consent" value="${c.id}" ${
+          (value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
+        } ${c.required ? 'disabled="disabled"' : ''} />
+        
+      </label>
+    `,
+      )
+      .join('')}
+      <div class="cookie-manager__actions">
+      <button type="submit" class="cookie-manager__accept">${options.labels.acceptAll}</button>
+        <button type="submit" class="cookie-manager__confirm cookie-manager__button-primary">${
+          options.labels.confirm
+        }</button>
+      </div>
+  </div>
+`,
+    getDefaultView: options => `
     <div class="cookie-manager__modal">
       <div class="cookie-manager__title">${options.title}</div>
       <div class="cookie-manager__description">${options.description}</div>
-      ${options.consents
-        .map(
-          c => `
-        <label class="cookie-manager__consent">
-          <span class="cookie-manager__consent-content">
-            <span class="cookie-manager__consent-title">${c.title}</span>
-            <span class="cookie-manager__consent-description">${c.description}</span>
-          </span>
-          
-          <input type="checkbox" name="consent" value="${c.id}" ${
-            (value && value.includes(c.id)) || (!value && (c.default || c.required))
-              ? 'checked'
-              : ''
-          } ${c.required ? 'disabled="disabled"' : ''} />
-          
-        </label>
-      `,
-        )
-        .join('')}
-        <div class="cookie-manager__actions">
-            <button type="submit" class="cookie-manager__accept">${options.labels.accept}</button>
-            <button type="submit" class="cookie-manager__decline">${options.labels.decline}</button>
-          </div>
+      
+      <div class="cookie-manager__actions">
+      <button type="submit" class="cookie-manager__configure">${options.labels.configure}</button>
+      <button type="submit" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.accept}</button>
+      </div>
     </div>
-  </form>
-`
-  const getStyle = () => `
+`,
+    getStyle: () => `
   .cookie-manager {
     background-color: rgba(0,0,0,0.8);
 
@@ -46,24 +55,30 @@ function CookieManager(options = {}) {
     width: 100%;
     height: 100%;
     padding: 2rem;
+    z-index: 10000;
 
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
   }
 
   .cookie-manager__modal {
     background-color: white;
     padding: 2rem;
     border-radius: var(--border-radius, 3px);
-    max-width: 600px;
+    max-width: 700px;
   }
 
   .cookie-manager__title,
   .cookie-manager__consent-title {
     font-weight: bold;
     font-size: 1.25rem;
-    margin-bottom: .5rem;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .cookie-manager__description {
+    white-space: pre-line;
   }
 
   .cookie-manager__consent {
@@ -91,6 +106,7 @@ function CookieManager(options = {}) {
   
   .cookie-manager__consent-description {
     font-size: .8rem;
+    white-space: pre-line;
   }
 
   .cookie-manager__actions {
@@ -110,15 +126,16 @@ function CookieManager(options = {}) {
     cursor: pointer;
   }
 
-  .cookie-manager__accept {
+  .cookie-manager__button-primary {
     background-color: var(--primary, #1d56d8);
     border-color: var(--primary, #1d56d8);
     color: var(--primary-contrast, white);
   }
-`
+`,
+  }
 
   let style = document.createElement('style')
-  style.innerHTML = getStyle(options)
+  style.innerHTML = Renderer.getStyle(options)
 
   document.head.appendChild(style)
 
@@ -133,31 +150,40 @@ function CookieManager(options = {}) {
   }
   let hide = () => container.removeChild(el)
   let render = () => {
-    el.innerHTML = getMarkup(options)
-    container.appendChild(el)
+    el.innerHTML = Renderer[`get${view}View`](options)
+    if (!container.contains(el)) container.appendChild(el)
   }
   let init = () => {
     load()
-    el.addEventListener('click', handlers.clickaway)
     el.addEventListener('submit', handlers.submit)
     if (!value) render()
     else onChange(value)
   }
   let destroy = () => {
-    el.removeEventListener('click', handlers.clickaway)
     el.removeEventListener('submit', handlers.submit)
     hide()
   }
 
   let handlers = {
-    clickaway: e => e.target === el && hide(),
     submit: e => {
       e.preventDefault()
-      let consents = e.submitter.className.includes('decline')
-        ? options.consents.filter(c => c.required).map(c => c.id)
-        : Array.from(e.target.querySelectorAll('input'))
-            .filter(e => e.checked)
-            .map(e => e.value)
+
+      let inputs = Array.from(e.target.querySelectorAll('input'))
+      let consents
+
+      if (e.submitter.className.includes('configure')) {
+        view = 'Config'
+        return render()
+      }
+
+      if (e.submitter.className.includes('accept')) {
+        consents = options.consents.map(c => c.id)
+      }
+
+      if (e.submitter.className.includes('confirm')) {
+        consents = inputs.filter(e => e.checked).map(e => e.value)
+      }
+
       onChange(consents)
       save(consents)
       hide()
@@ -167,7 +193,10 @@ function CookieManager(options = {}) {
   init()
 
   return {
-    show: render,
+    show: () => {
+      view = 'Default'
+      render()
+    },
     hide,
     destroy,
   }
