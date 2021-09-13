@@ -201,3 +201,5 @@ function CookieManager(options = {}) {
     destroy,
   }
 }
+
+export default CookieManager
