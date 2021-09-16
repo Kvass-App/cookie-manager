@@ -2,8 +2,9 @@ function CookieManager(options = {}) {
   let { onChange = () => {}, container = document.body } = options
 
   let value
+  let elements
   let view = 'Default'
-  let el = document.createElement('form')
+  let el = document.createElement('div')
   el.classList.add('cookie-manager')
 
   const Renderer = {
@@ -27,8 +28,8 @@ function CookieManager(options = {}) {
       )
       .join('')}
       <div class="cookie-manager__actions">
-      <button type="submit" class="cookie-manager__accept">${options.labels.acceptAll}</button>
-        <button type="submit" class="cookie-manager__confirm cookie-manager__button-primary">${
+      <button type="button" class="cookie-manager__accept">${options.labels.acceptAll}</button>
+        <button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${
           options.labels.confirm
         }</button>
       </div>
@@ -40,8 +41,8 @@ function CookieManager(options = {}) {
       <div class="cookie-manager__description">${options.description}</div>
       
       <div class="cookie-manager__actions">
-      <button type="submit" class="cookie-manager__configure">${options.labels.configure}</button>
-      <button type="submit" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.accept}</button>
+      <button type="button" class="cookie-manager__configure">${options.labels.configure}</button>
+      <button type="button" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.accept}</button>
       </div>
     </div>
 `,
@@ -155,36 +156,39 @@ function CookieManager(options = {}) {
   }
   let init = () => {
     load()
-    el.addEventListener('submit', handlers.submit)
-    if (!value) render()
-    else onChange(value)
+    el.addEventListener('click', handlers.submit)
+    if (!value) {
+      render()
+    } else onChange(value)
   }
   let destroy = () => {
-    el.removeEventListener('submit', handlers.submit)
+    el.removeEventListener('click', handlers.submit)
     hide()
   }
 
   let handlers = {
     submit: e => {
+      if (!e.target.className) return
       e.preventDefault()
 
-      let inputs = Array.from(e.target.querySelectorAll('input'))
+      let inputs = Array.from(el.querySelectorAll('input'))
       let consents
 
-      if (e.submitter.className.includes('configure')) {
+      if (e.target.className.includes('configure')) {
         view = 'Config'
         return render()
       }
 
-      if (e.submitter.className.includes('accept')) {
+      if (e.target.className.includes('accept')) {
         consents = options.consents.map(c => c.id)
       }
 
-      if (e.submitter.className.includes('confirm')) {
+      if (e.target.className.includes('confirm')) {
         consents = inputs.filter(e => e.checked).map(e => e.value)
       }
+      if (!consents) return
 
-      onChange(consents)
+      onChange(consent)
       save(consents)
       hide()
     },
