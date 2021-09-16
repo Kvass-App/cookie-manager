@@ -188,7 +188,7 @@ function CookieManager(options = {}) {
       }
       if (!consents) return
 
-      onChange(consent)
+      onChange(consents)
       save(consents)
       hide()
     },
