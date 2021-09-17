@@ -98,8 +98,16 @@ function CookieManager(options = {}) {
   }
 
   .cookie-manager__consent input {
-    transform: scale(1.2);
-  }
+      transform: scale(1.2);
+      -webkit-transform: scale(1.2);
+
+      @media (max-width: 767px) {
+        -webkit-transform: scale(5);
+        transform: scale(5);
+      }
+
+    
+}
 
   .cookie-manager__consent-title {
     font-size: 1rem;
@@ -168,11 +176,8 @@ function CookieManager(options = {}) {
 
   let handlers = {
     submit: e => {
-      if (!e.target.className) return
-      e.preventDefault()
-
       let inputs = Array.from(el.querySelectorAll('input'))
-      let consents
+      let consents = []
 
       if (e.target.className.includes('configure')) {
         view = 'Config'
@@ -180,17 +185,16 @@ function CookieManager(options = {}) {
       }
 
       if (e.target.className.includes('accept')) {
-        consents = options.consents.map(c => c.id)
+        consents.push(...options.consents.map(c => c.id))
       }
 
       if (e.target.className.includes('confirm')) {
-        consents = inputs.filter(e => e.checked).map(e => e.value)
+        consents.push(...inputs.filter(e => e.checked).map(e => e.value))
       }
-      if (!consents) return
 
       onChange(consents)
       save(consents)
-      hide()
+      if (['confirm', 'accept'].some(i => e.target.className.includes(i))) hide()
     },
   }
 
