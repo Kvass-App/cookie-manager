@@ -137,7 +137,6 @@ function CookieManager(options = {}) {
   
 
   @media (max-width: 900px) {
-    //css rule checkboxes for iOS devices
     @supports (-webkit-touch-callout: none) {
       .cookie-manager__consent input {
         transform: scale(5);
@@ -145,6 +144,8 @@ function CookieManager(options = {}) {
     }
   .cookie-manager__modal {
     padding: 1rem;
+    max-height: 580px;
+    overflow-y: auto;
   }
   .cookie-manager__actions {
     padding: 1rem;
