@@ -134,11 +134,15 @@ function CookieManager(options = {}) {
     border-color: var(--primary, #1d56d8);
     color: var(--primary-contrast, white);
   }
+  
 
   @media (max-width: 900px) {
-    .cookie-manager__consent input {
-    -webkit-transform: scale(5);
-  }
+    //css rule checkboxes for iOS devices
+    @supports (-webkit-touch-callout: none) {
+      .cookie-manager__consent input {
+        transform: scale(5);
+      }
+    }
   .cookie-manager__modal {
     padding: 1rem;
   }
@@ -146,7 +150,6 @@ function CookieManager(options = {}) {
     padding: 1rem;
     margin: 1rem -1rem -1rem -1rem;
   }
-  
   }
 `,
   }
