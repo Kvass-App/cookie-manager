@@ -99,15 +99,9 @@ function CookieManager(options = {}) {
 
   .cookie-manager__consent input {
       transform: scale(1.2);
-      -webkit-transform: scale(1.2);
 
-      @media (max-width: 767px) {
-        -webkit-transform: scale(5);
-        transform: scale(5);
-      }
-
-    
 }
+
 
   .cookie-manager__consent-title {
     font-size: 1rem;
@@ -139,6 +133,20 @@ function CookieManager(options = {}) {
     background-color: var(--primary, #1d56d8);
     border-color: var(--primary, #1d56d8);
     color: var(--primary-contrast, white);
+  }
+
+  @media (max-width: 900px) {
+    .cookie-manager__consent input {
+    -webkit-transform: scale(5);
+  }
+  .cookie-manager__modal {
+    padding: 1rem;
+  }
+  .cookie-manager__actions {
+    padding: 1rem;
+    margin: 1rem -1rem -1rem -1rem;
+  }
+  
   }
 `,
   }
