@@ -219,6 +219,10 @@ function CookieManager(options = {}) {
     },
     hide,
     destroy,
+    getConsents: () => {
+      load()
+      return value
+    },
   }
 }
 
