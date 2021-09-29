@@ -165,7 +165,8 @@ function CookieManager(options = {}) {
     value = consents
   }
   let load = () => {
-    let raw = window.localStorage.getItem('cookie-manager')
+    let qs = new URLSearchParams(location.search)
+    let raw = qs.get('cookie-manager') || window.localStorage.getItem('cookie-manager')
     if (!raw) return
     value = raw.split(',')
   }
