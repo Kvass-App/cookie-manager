@@ -2,7 +2,6 @@ function CookieManager(options = {}) {
   let { onChange = () => {}, container = document.body } = options
 
   let value
-  let elements
   let view = 'Default'
   let el = document.createElement('div')
   el.classList.add('cookie-manager')
@@ -178,9 +177,8 @@ function CookieManager(options = {}) {
   let init = () => {
     load()
     el.addEventListener('click', handlers.submit)
-    if (!value) {
-      render()
-    } else onChange(value)
+    if (!value) render()
+    else onChange(value)
   }
   let destroy = () => {
     el.removeEventListener('click', handlers.submit)
@@ -189,6 +187,8 @@ function CookieManager(options = {}) {
 
   let handlers = {
     submit: e => {
+      if (!['confirm', 'accept', 'configure'].some(i => e.target.className.includes(i))) return
+
       let inputs = Array.from(el.querySelectorAll('input'))
       let consents = []
 
@@ -197,17 +197,13 @@ function CookieManager(options = {}) {
         return render()
       }
 
-      if (e.target.className.includes('accept')) {
-        consents.push(...options.consents.map(c => c.id))
-      }
-
-      if (e.target.className.includes('confirm')) {
+      if (e.target.className.includes('accept')) consents.push(...options.consents.map(c => c.id))
+      if (e.target.className.includes('confirm'))
         consents.push(...inputs.filter(e => e.checked).map(e => e.value))
-      }
 
       onChange(consents)
       save(consents)
-      if (['confirm', 'accept'].some(i => e.target.className.includes(i))) hide()
+      hide()
     },
   }
 
