@@ -14,10 +14,10 @@ function CookieManager(options = {}) {
           c => `
       <label class="cookie-manager__consent">
         <input type="checkbox" name="consent" value="${c.id}" ${(value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
-            } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="describedby-${c.id}" />
+            } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="cookie-manager-describedby-${c.id}" />
         <span class="cookie-manager__consent-content">
           <h3 class="cookie-manager__consent-title">${c.title}</h3>
-          <p class="cookie-manager__consent-description" id="describedby-${c.id}">${c.description}</p>
+          <p class="cookie-manager__consent-description" id="cookie-manager-describedby-${c.id}">${c.description}</p>
         </span>
       </label>
     `,
