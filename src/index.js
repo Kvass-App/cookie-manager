@@ -1,5 +1,5 @@
 function CookieManager(options = {}) {
-  let { onChange = () => {}, container = document.body } = options
+  let { onChange = () => { }, container = document.body } = options
 
   let value
   let view = 'Default'
@@ -10,43 +10,41 @@ function CookieManager(options = {}) {
     getConfigView: options => `
   <div class="cookie-manager__modal">
     ${options.consents
-      .map(
-        c => `
+        .map(
+          c => `
       <label class="cookie-manager__consent">
+        <input type="checkbox" name="consent" value="${c.id}" ${(value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
+            } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="cookie-manager-describedby-${c.id}" />
         <span class="cookie-manager__consent-content">
-          <span class="cookie-manager__consent-title">${c.title}</span>
-          <span class="cookie-manager__consent-description">${c.description}</span>
+          <h3 class="cookie-manager__consent-title">${c.title}</h3>
+          <p class="cookie-manager__consent-description" id="cookie-manager-describedby-${c.id}">${c.description}</p>
         </span>
-        
-        <input type="checkbox" name="consent" value="${c.id}" ${
-          (value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
-        } ${c.required ? 'disabled="disabled"' : ''} />
-        
       </label>
     `,
-      )
-      .join('')}
+        )
+        .join('')}
       <div class="cookie-manager__actions">
       <button type="button" class="cookie-manager__accept">${options.labels.acceptAll}</button>
-        <button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${
-          options.labels.confirm
-        }</button>
+        <button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${options.labels.confirm
+      }</button>
       </div>
   </div>
 `,
     getDefaultView: options => `
     <div class="cookie-manager__modal">
-      <div class="cookie-manager__title">${options.title}</div>
-      <div class="cookie-manager__description">${options.description}</div>
+      <h2 class="cookie-manager__title">${options.title}</h2>
+      <p class="cookie-manager__description">${options.description}</p>
       
       <div class="cookie-manager__actions">
-      <button type="button" class="cookie-manager__configure">${options.labels.configure}</button>
-      <button type="button" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.accept}</button>
+        <button type="button" class="cookie-manager__configure">${options.labels.configure}</button>
+        <button type="button" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.accept}</button>
       </div>
     </div>
 `,
     getStyle: () => `
   .cookie-manager {
+    --cookie-manager-spacing: 2rem;
+
     background-color: rgba(0,0,0,0.8);
 
     position: fixed;
@@ -54,17 +52,19 @@ function CookieManager(options = {}) {
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 2rem;
+    padding: var(--cookie-manager-spacing);
     z-index: 10000;
 
     display: flex;
     justify-content: center;
     align-items: flex-end;
+
+    accent-color: var(--primary);
   }
 
   .cookie-manager__modal {
     background-color: white;
-    padding: 2rem;
+    padding: var(--cookie-manager-spacing);
     border-radius: var(--border-radius, 3px);
     max-width: 700px;
   }
@@ -84,12 +84,22 @@ function CookieManager(options = {}) {
   .cookie-manager__consent {
     border: 1px solid var(--border-color, #eaeaea);
     border-radius: var(--border-radius, 3px);
-    margin-top: 1rem;
     padding: 1rem;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 1rem;
 
     font-weight: normal;
     cursor: pointer;
+  }
+
+  .cookie-manager__consent:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  .cookie-manager__consent:has(input:checked) {
+    border-color: var(--primary);
   }
 
   .cookie-manager__consent span {
@@ -97,9 +107,8 @@ function CookieManager(options = {}) {
   }
 
   .cookie-manager__consent input {
-      transform: scale(1.2);
-
-}
+    transform: scale(1.2);
+  }
 
 
   .cookie-manager__consent-title {
@@ -113,12 +122,10 @@ function CookieManager(options = {}) {
 
   .cookie-manager__actions {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     gap: 1rem;
     flex-wrap: wrap;
-    background-color: #f9f9f9;
-    padding: 2rem;
-    margin: 2rem -2rem -2rem -2rem;
+    padding-top: var(--cookie-manager-spacing);
   }
   
   .cookie-manager__actions button {
@@ -126,30 +133,27 @@ function CookieManager(options = {}) {
     border: 1px solid #d8d8d8;
     border-radius: var(--border-radius, 3px);
     cursor: pointer;
+    color: inherit;
   }
 
   .cookie-manager__button-primary {
     background-color: var(--primary, #1d56d8);
     border-color: var(--primary, #1d56d8);
-    color: var(--primary-contrast, white);
+    color: var(--primary-contrast, white) !important;
   }
   
 
   @media (max-width: 900px) {
-    @supports (-webkit-touch-callout: none) {
-      .cookie-manager__consent input {
-        transform: scale(5);
-      }
+    .cookie-manager {
+      --cookie-manager-spacing: 1rem;
+      padding: 0;
     }
-  .cookie-manager__modal {
-    padding: 1rem;
-    max-height: 580px;
-    overflow-y: auto;
   }
-  .cookie-manager__actions {
-    padding: 1rem;
-    margin: 1rem -1rem -1rem -1rem;
-  }
+
+  @media (max-width: 500px) {
+    .cookie-manager__actions {
+      flex-direction: column;
+    }
   }
 `,
   }
