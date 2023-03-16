@@ -67,6 +67,8 @@ function CookieManager(options = {}) {
     padding: var(--cookie-manager-spacing);
     border-radius: var(--border-radius, 3px);
     max-width: 700px;
+    max-height: 100dvh;
+    overflow-y: auto;
   }
 
   .cookie-manager__title,
