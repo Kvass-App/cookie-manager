@@ -1,5 +1,5 @@
 function CookieManager(options = {}) {
-  let { onChange = () => { }, container = document.body } = options
+  let { onChange = () => {}, container = document.body } = options
 
   let value
   let view = 'Default'
@@ -10,23 +10,29 @@ function CookieManager(options = {}) {
     getConfigView: options => `
   <div class="cookie-manager__modal">
     ${options.consents
-        .map(
-          c => `
+      .map(
+        c => `
       <label class="cookie-manager__consent">
-        <input type="checkbox" name="consent" value="${c.id}" ${(value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
-            } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="cookie-manager-describedby-${c.id}" />
+        <input type="checkbox" name="consent" value="${c.id}" ${
+          (value && value.includes(c.id)) || (!value && (c.default || c.required)) ? 'checked' : ''
+        } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="cookie-manager-describedby-${
+          c.id
+        }" />
         <span class="cookie-manager__consent-content">
           <h3 class="cookie-manager__consent-title">${c.title}</h3>
-          <p class="cookie-manager__consent-description" id="cookie-manager-describedby-${c.id}">${c.description}</p>
+          <p class="cookie-manager__consent-description" id="cookie-manager-describedby-${c.id}">${
+          c.description
+        }</p>
         </span>
       </label>
     `,
-        )
-        .join('')}
+      )
+      .join('')}
       <div class="cookie-manager__actions">
       <button type="button" class="cookie-manager__accept">${options.labels.acceptAll}</button>
-        <button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${options.labels.confirm
-      }</button>
+        <button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${
+          options.labels.confirm
+        }</button>
       </div>
   </div>
 `,
@@ -175,6 +181,9 @@ function CookieManager(options = {}) {
     if (!raw) return
     value = raw.split(',')
   }
+  let updateOptions = newOptions => {
+    options = newOptions
+  }
   let hide = () => container.removeChild(el)
   let render = () => {
     el.innerHTML = Renderer[`get${view}View`](options)
@@ -216,6 +225,7 @@ function CookieManager(options = {}) {
   init()
 
   return {
+    updateOptions,
     show: () => {
       view = 'Default'
       render()
