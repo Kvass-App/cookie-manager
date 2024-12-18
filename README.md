@@ -14,7 +14,7 @@ let CM = new CookieManager({
  For mer informasjon se vår Personvernerklæring.`,
   labels: {
     acceptAll: 'Aksepter alle',
-    declineAll: 'Avslå alle',
+    decline: 'Kun nødvendige',
     confirm: 'Bekreft',
   },
   consents: [

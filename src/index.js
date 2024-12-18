@@ -33,7 +33,7 @@ function CookieManager(options = {}) {
         )
         .join('')}
         <div class="cookie-manager__actions">
-        <button type="button" class="cookie-manager__decline">${options.labels.declineAll}</button>
+        <button type="button" class="cookie-manager__decline">${options.labels.decline}</button>
            ${hasChanges()
         ? `<button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${options.labels.confirm
         }</button>`
