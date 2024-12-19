@@ -1,5 +1,9 @@
 function CookieManager(options = {}) {
-  let { onChange = () => { }, container = document.body } = options
+  let {
+    onChange = () => { },
+    container = document.body,
+    key = 'cookie-manager',
+  } = options
 
   let value = []
   let view = 'Default'
@@ -23,8 +27,8 @@ function CookieManager(options = {}) {
         <label class="cookie-manager__consent">
 
           <input type="checkbox" name="consent" value="${c.id}" ${value && value.includes(c.id) ? 'checked' : ''
-            } ${c.required ? 'disabled="disabled"' : ''} aria-describedby="cookie-manager-describedby-${c.id
-            }" />
+            } ${c.required ? 'disabled="disabled"' : ''
+            } aria-describedby="cookie-manager-describedby-${c.id}" />
           <span class="cookie-manager__consent-content">
             <span class="cookie-manager__consent-title">${c.title}</span>
           </span>
@@ -33,12 +37,11 @@ function CookieManager(options = {}) {
         )
         .join('')}
         <div class="cookie-manager__actions">
-        <button type="button" class="cookie-manager__decline">${options.labels.decline}</button>
+        <button type="button" class="cookie-manager__decline">${options.labels.decline
+      }</button>
            ${hasChanges()
-        ? `<button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${options.labels.confirm
-        }</button>`
-        : `<button type="button" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.acceptAll
-        }</button>`
+        ? `<button type="button" class="cookie-manager__confirm cookie-manager__button-primary">${options.labels.confirm}</button>`
+        : `<button type="button" class="cookie-manager__accept cookie-manager__button-primary">${options.labels.acceptAll}</button>`
       }
         </div>
     </div>
@@ -159,13 +162,12 @@ function CookieManager(options = {}) {
   document.head.appendChild(style)
 
   let save = (consents) => {
-    window.localStorage.setItem(`cookie-manager`, consents)
+    window.localStorage.setItem(key, consents)
     value = consents
   }
   let load = () => {
     let qs = new URLSearchParams(location.search)
-    let raw =
-      qs.get('cookie-manager') || window.localStorage.getItem('cookie-manager')
+    let raw = qs.get(key) || window.localStorage.getItem(key)
     if (!raw) return
     value = raw.split(',')
   }
@@ -219,7 +221,9 @@ function CookieManager(options = {}) {
 
       if (e.target.className.includes('accept'))
         consents.push(...options.consents.map((c) => c.id))
-      if (e.target.className.includes('confirm')) consents = value
+      if (e.target.className.includes('confirm')) {
+        consents.push(...value)
+      }
       if (e.target.className.includes('decline')) {
         //make sure to always include required
         consents = value.filter(
