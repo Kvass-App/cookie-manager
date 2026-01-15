@@ -1,8 +1,20 @@
 function CookieManager(options = {}) {
+  const defaultKey = 'cookie-manager'
+
   let {
     onChange = () => { },
     container = document.body,
-    key = 'cookie-manager',
+    storage = {
+      get: () => {
+        let qs = new URLSearchParams(location.search)
+        let raw = qs.get(defaultKey) || window.localStorage.getItem(defaultKey)
+        if (!raw) return null
+        return raw.split(',')
+      },
+      set: (consents) => {
+        window.localStorage.setItem(defaultKey, consents)
+      }
+    }
   } = options
 
   let value = []
@@ -162,14 +174,13 @@ function CookieManager(options = {}) {
   document.head.appendChild(style)
 
   let save = (consents) => {
-    window.localStorage.setItem(key, consents)
+    storage.set(consents)
     value = consents
   }
   let load = () => {
-    let qs = new URLSearchParams(location.search)
-    let raw = qs.get(key) || window.localStorage.getItem(key)
-    if (!raw) return
-    value = raw.split(',')
+    let result = storage.get()
+    if (!result) return
+    value = result
   }
   let updateOptions = (newOptions) => {
     options = newOptions
