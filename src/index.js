@@ -125,7 +125,7 @@ function CookieManager(options = {}) {
   }
 
   .cookie-manager__consent span {
-    display: block;
+    // display: block;
   }
 
   .cookie-manager__consent input {
@@ -139,8 +139,8 @@ function CookieManager(options = {}) {
     font-weight: bold;
   }
   
-  .cookie-manager__consent-description {
-    margin-top: .5em;
+  .cookie-manager__consent-description:before {
+   content: " - ";
   }
 
   .cookie-manager__consent-description:empty {
