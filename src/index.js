@@ -168,7 +168,7 @@ function CookieManager(options = {}) {
       font-size: .8em;
     }
     .cookie-manager__actions {
-      flex-direction: column;
+      flex-direction: column-reverse;
     }
   }
 `,
