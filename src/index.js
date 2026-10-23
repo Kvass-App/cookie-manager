@@ -182,6 +182,40 @@ function CookieManager(options = {}) {
       flex-direction: column-reverse;
     }
   }
+
+  @property --cookie-manager-offset {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 0px;
+  }
+
+  .cookie-manager__modal {
+    translate: 0 var(--cookie-manager-offset);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cookie-manager {
+      animation: cookie-manager-in 300ms ease-out;
+    }
+
+    .cookie-manager--leaving {
+      animation: cookie-manager-out 200ms ease-in forwards;
+    }
+  }
+
+  @keyframes cookie-manager-in {
+    from {
+      opacity: 0;
+      --cookie-manager-offset: 1rem;
+    }
+  }
+
+  @keyframes cookie-manager-out {
+    to {
+      opacity: 0;
+      --cookie-manager-offset: 1rem;
+    }
+  }
 `,
   }
 
@@ -202,8 +236,16 @@ function CookieManager(options = {}) {
   let updateOptions = newOptions => {
     options = newOptions
   }
-  let hide = () => container.removeChild(el)
+  let hide = () => {
+    el.classList.add('cookie-manager--leaving')
+    Promise.all(el.getAnimations().map(a => a.finished)).then(() => {
+      if (!el.classList.contains('cookie-manager--leaving')) return
+      el.classList.remove('cookie-manager--leaving')
+      container.removeChild(el)
+    })
+  }
   let render = () => {
+    el.classList.remove('cookie-manager--leaving')
     if (!value.length) {
       value = options.consents.filter(i => i.required || i.default).map(i => i.id)
     }
