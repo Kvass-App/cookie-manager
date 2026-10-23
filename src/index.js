@@ -65,15 +65,24 @@ function CookieManager(options = {}) {
     --_cookie-manager-gap: var(--cookie-manager-gap, calc(var(--_cookie-manager-spacing) / 2));
     --_cookie-manager-border-radius: var(--cookie-manager-border-radius, 3px);
     --_cookie-manager-active-color: var(--cookie-manager-active-color, #000);
+    --_cookie-manager-backdrop: var(--cookie-manager-backdrop, rgba(0,0,0,0.8));
+    --_cookie-manager-background: var(--cookie-manager-background, white);
+    --_cookie-manager-border-color: var(--cookie-manager-border-color, #d8d8d8);
+    --_cookie-manager-button-background: var(--cookie-manager-button-background, buttonface);
+    --_cookie-manager-font-size: var(--cookie-manager-font-size, 1em);
+    --_cookie-manager-z-index: var(--cookie-manager-z-index, 10000);
     
-    background-color: rgba(0,0,0,0.8);
+    background-color: var(--_cookie-manager-backdrop);
+    color: var(--cookie-manager-color);
+    font-family: var(--cookie-manager-font-family);
+    font-size: var(--_cookie-manager-font-size);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     padding: var(--_cookie-manager-spacing);
-    z-index: 10000;
+    z-index: var(--_cookie-manager-z-index);
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -81,7 +90,7 @@ function CookieManager(options = {}) {
   }
 
   .cookie-manager__modal {
-    background-color: white;
+    background-color: var(--_cookie-manager-background);
     padding: var(--_cookie-manager-spacing);
     border-radius: var(--_cookie-manager-border-radius);
     max-width: 700px;
@@ -110,7 +119,7 @@ function CookieManager(options = {}) {
   }
 
   .cookie-manager__consent {
-    border: 1px solid #d8d8d8;
+    border: 1px solid var(--_cookie-manager-border-color);
     border-radius: var(--_cookie-manager-border-radius);
     padding: calc(var(--_cookie-manager-spacing) / 2);
     display: grid;
@@ -157,15 +166,17 @@ function CookieManager(options = {}) {
   
   .cookie-manager__actions button {
     padding: .5rem 1.5rem;
-    border: 1px solid #d8d8d8;
+    border: 1px solid var(--_cookie-manager-border-color);
     border-radius: var(--_cookie-manager-border-radius);
     cursor: pointer;
-    color: inherit;
+    font: inherit;
+    color: var(--cookie-manager-button-color);
+    background-color: var(--_cookie-manager-button-background);
   }
 
   @media (max-width: 500px) {
     .cookie-manager {
-      font-size: .8em;
+      font-size: calc(var(--_cookie-manager-font-size) * .8);
     }
     .cookie-manager__actions {
       flex-direction: column-reverse;
